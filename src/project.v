@@ -1,21 +1,21 @@
 /*
- * Copyright (c) 2024 Peijie Ma
- * SPDX-License-Identifier: Apache-2.0
+ * 8-bit Ripple Carry Adder for TinyTapeout
  */
 
 `default_nettype none
 
 module tt_um_adder (
-    input  wire [7:0] ui_in,    // Dedicated inputs
-    output wire [7:0] uo_out,   // Dedicated outputs
-    input  wire [7:0] uio_in,   // IOs: Input path
-    output wire [7:0] uio_out,  // IOs: Output path
-    output wire [7:0] uio_oe,   // IOs: Enable path (active high: 0=input, 1=output)
-    input  wire       ena,      // always 1 when the design is powered, so you can ignore it
-    input  wire       clk,      // clock
-    input  wire       rst_n     // reset_n - low to reset
+    input  wire [7:0] ui_in,    // First 8-bit input (A)
+    input  wire [7:0] uio_in,   // Second 8-bit input (B)
+    output wire [7:0] uo_out,   // 8-bit sum output (Y)
+    output wire [7:0] uio_out,  // Not used, set to 0
+    output wire [7:0] uio_oe,   // Not used, set to 0
+    input  wire       ena,      // Always 1, can be ignored
+    input  wire       clk,      // Clock (not needed for combinational logic)
+    input  wire       rst_n     // Reset (not needed for combinational logic)
 );
-// Internal carry signals
+
+  // Internal carry signals
   wire carry [7:0];
 
   // Instantiate 8 full adders in a ripple carry structure
