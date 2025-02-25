@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module tt_um_example (
+module tt_um_adder (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
@@ -15,13 +15,38 @@ module tt_um_example (
     input  wire       clk,      // clock
     input  wire       rst_n     // reset_n - low to reset
 );
+// Internal carry signals
+  wire carry [7:0];
 
-  // All output pins must be assigned. If not used, assign to 0.
-  assign uo_out  = ui_in + uio_in;  // Example: ou_out is the sum of ui_in and uio_in
-  assign uio_out = 0;
-  assign uio_oe  = 0;
+  // Instantiate 8 full adders in a ripple carry structure
+  full_adder fa0 (ui_in[0], uio_in[0], 1'b0,    uo_out[0], carry[0]);
+  full_adder fa1 (ui_in[1], uio_in[1], carry[0], uo_out[1], carry[1]);
+  full_adder fa2 (ui_in[2], uio_in[2], carry[1], uo_out[2], carry[2]);
+  full_adder fa3 (ui_in[3], uio_in[3], carry[2], uo_out[3], carry[3]);
+  full_adder fa4 (ui_in[4], uio_in[4], carry[3], uo_out[4], carry[4]);
+  full_adder fa5 (ui_in[5], uio_in[5], carry[4], uo_out[5], carry[5]);
+  full_adder fa6 (ui_in[6], uio_in[6], carry[5], uo_out[6], carry[6]);
+  full_adder fa7 (ui_in[7], uio_in[7], carry[6], uo_out[7], carry[7]);
 
-  // List all unused inputs to prevent warnings
+  // Set unused outputs to 0
+  assign uio_out = 8'b00000000;
+  assign uio_oe  = 8'b00000000;
+
+  // Prevent unused signal warnings
   wire _unused = &{ena, clk, rst_n, 1'b0};
+
+endmodule
+
+// Full Adder Module
+module full_adder (
+    input  wire a,    // Input bit A
+    input  wire b,    // Input bit B
+    input  wire cin,  // Carry-in
+    output wire sum,  // Sum output
+    output wire cout  // Carry-out
+);
+
+  assign sum  = a ^ b ^ cin;
+  assign cout = (a & b) | (b & cin) | (cin & a);
 
 endmodule
