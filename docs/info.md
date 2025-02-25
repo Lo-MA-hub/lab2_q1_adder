@@ -9,7 +9,7 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-Explain how your project works
+We use three XOR gates to implement this adder
 
 ## How to test
 
